@@ -41,10 +41,23 @@ export type Member = {
 export type NotionPost = {
     id: string;
     title: string;
-    date: string;
-    types: string[];
-    files: string[];
-    author: string;
+    intro: string;
+    tag1: string[];
+    tag2: string[];
+    member: {
+        id: string;
+    }[];
+    top_image: string;
+    movie: string;
+    text00: string;
+    image01: string;
+    image02: string;
+    image03: string;
+    image04: string;
+    text01: string;
+    text02: string;
+    text03: string;
+    text04: string;
 };
 
 if (!process.env.SERVICE_DOMAIN) {
@@ -78,27 +91,7 @@ export const getPortfolios = async () => {
     return portfolios;
 }
 
-// 特定のポートフォリオの詳細データを取得する関数
-export const getPortfolioDetail = async (contentId: string) => {
-    console.log(`ポートフォリオ(id: ${contentId})の詳細データの取得を開始します。`);
-    const response = await client.getListDetail<any>({ endpoint: "port", contentId });
 
-    const portfolioDetail: PortfolioDetail = {
-        id: response.id,
-        pj_name: response.pj_name,
-        pj_intro: response.pj_intro,
-        pj_images: response.pj_image.map((image: any) => image.url),
-        pj_members: response.pj_member.map((member: any) => ({
-            id: member.id, // メンバーのIDを追加
-            name: member.name,
-            icon: member.icon.url,
-            job: member.job,
-        })),
-        pj_tags: response.pj_tag.map((tag: any) => tag.name),
-    };
-
-    return portfolioDetail;
-};
 
 
 export const getMember = async (id: string): Promise<Member> => {
@@ -125,43 +118,121 @@ export const getMembers = async (): Promise<Member[]> => {
     }));
 };
 
+
 // Notionのデータベースから全ての投稿を取得する関数
 export async function getAllPosts(): Promise<NotionPost[]> {
     if (!process.env.DATABASE_ID) {
         throw new Error("DATABASE_ID is required");
     }
 
+    try {
+
     const response = await notion.databases.query({
-      database_id: process.env.DATABASE_ID, // ここでundefinedはあり得ない
+        database_id: process.env.DATABASE_ID,
         sorts: [
-        {
-            property: 'createdate',
-            direction: 'descending',
-        },
+            {
+                property: 'id',
+                direction: 'descending',
+            },
         ]
     });
 
-    const posts = response.results.map((post: any) => {
-        const id = post.id;
-        const title  = post.properties.title.title[0]?.plain_text ?? "No Title"; // undefinedの場合のデフォルト値
-        const date   = post.properties.createdate.date.start ?? "No Date"; // undefinedの場合のデフォルト値
-        const types  = post.properties.types.multi_select.map((item: any) => item.name);
-        const files  = post.properties.file.files.map((file: any) => file.file.url);
-        const author = post.properties.author.select.name ?? "No Author"; // undefinedの場合のデフォルト値
+    console.log("Notion pages data:", response.results);
 
-        return { id, title, date, types, files, author };
-    });
+    const posts = await Promise.all(response.results.map(async (post: any) => {
+        const id = post.id;
+        const title = post.properties.title.title[0]?.plain_text ?? "No Title";
+        const intro = post.properties.intro.rich_text[0]?.plain_text ?? "";
+        const tag1 = post.properties.tag1?.multi_select?.map((item: any) => item.name) ?? [];
+        const tag2 = post.properties.tag2?.multi_select?.map((item: any) => item.name) ?? [];
+        const memberIds = post.properties.member?.people?.map((person: any) => person.id) ?? [];
+        const top_image = post.properties.top_image.files[0]?.file?.url ?? "";
+        const movie = post.properties.movie.files[0]?.file?.url ?? "";
+        const text00 = post.properties.text00.rich_text[0]?.plain_text ?? "";
+        const image01 = post.properties.image01.files[0]?.file?.url ?? "";
+        const image02 = post.properties.image02.files[0]?.file?.url ?? "";
+        const image03 = post.properties.image03.files[0]?.file?.url ?? "";
+        const image04 = post.properties.image04.files[0]?.file?.url ?? "";
+        const text01 = post.properties.text01.rich_text[0]?.plain_text ?? "";
+        const text02 = post.properties.text02.rich_text[0]?.plain_text ?? "";
+        const text03 = post.properties.text03.rich_text[0]?.plain_text ?? "";
+        const text04 = post.properties.text04.rich_text[0]?.plain_text ?? "";
+
+
+
+
+        console.log("Member property value:", post.properties.member);
+
+        return {
+            id,
+            title,
+            intro,
+            tag1,
+            tag2,
+            member: memberIds.map((id: string) => ({ id })), // id のみを取得
+            top_image,
+            movie,
+            text00,
+            image01,
+            image02,
+            image03,
+            image04,
+            text01,
+            text02,
+            text03,
+            text04
+        };
+    }));
 
     return posts;
+    } catch (error) {
+        console.error("投稿の取得中にエラーが発生しました:", error);
+        throw error;
+    }
 }
+
+// 特定のポートフォリオの詳細データを取得する関数
+export const getPortfolioDetail = async (contentId: string) => {
+    console.log(`ポートフォリオ(id: ${contentId})の詳細データの取得を開始します。`);
+    const response = await client.getListDetail<any>({ endpoint: "port", contentId });
+
+    const portfolioDetail: PortfolioDetail = {
+        id: response.id,
+        pj_name: response.pj_name,
+        pj_intro: response.pj_intro,
+        pj_images: response.pj_image.map((image: any) => image.url),
+        pj_members: response.pj_member.map((member: any) => ({
+            id: member.id, // メンバーのIDを追加
+            name: member.name,
+            icon: member.icon.url,
+            job: member.job,
+        })),
+        pj_tags: response.pj_tag.map((tag: any) => tag.name),
+    };
+
+    return portfolioDetail;
+};
+
 
 // Notionのデータベースから全ての投稿を取得し、結果をコンソールに出力する関数
 export async function printAllPosts(): Promise<NotionPost[]> {
     try {
         const posts = await getAllPosts();
         console.log("取得した投稿の一覧:");
-        console.log(posts);
-        return posts; // 取得した投稿データを返す
+        //console.log(posts);
+
+        const updatedPosts = posts.map((post: any) => {
+            //console.log("Post data:", post);
+
+            const member = post.member?.map((item: any) => item.id) ?? [];
+
+            return {
+                ...post,
+                member,
+            };
+        });
+
+        return updatedPosts; // 更新された投稿データを返す
     } catch (error) {
         console.error("投稿の取得中にエラーが発生しました:", error);
         return []; // エラーが発生した場合は空の配列を返す
