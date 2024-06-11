@@ -8,6 +8,7 @@ const config: Config = {
     "./src/hero/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/skillcheck/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -18,6 +19,9 @@ const config: Config = {
       },
       backgroundColor: {
         "custom-main": "#222f55",
+      },
+      fontFamily: {
+        'ubuntu-mono': ['Ubuntu Mono', 'monospace'],
       },
     },
   },

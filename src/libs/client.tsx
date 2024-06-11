@@ -139,8 +139,6 @@ export async function getAllMembers(): Promise<NotionMember[]> {
             const member_photo = member.properties.member_photo?.files?.[0]?.file?.url ?? "";
             const job_career = member.properties.job_career?.files?.[0]?.file?.url ?? "";
 
-            console.error("メンバーid", id); // エラーが発生した場合はコンソールに出力
-
             return {
                 id,
                 name,

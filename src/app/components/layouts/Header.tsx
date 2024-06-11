@@ -25,7 +25,7 @@ const Header = () => {
           borderBottomWidth: "4px", // 線の太さを2pxに設定
         }}
       >
-              <Link href="/portfolios" legacyBehavior>
+              <Link href="/" legacyBehavior>
                 <a 
                   className="ml-10"
                   style={{ fontSize: "16px", fontWeight: 'bold' }}

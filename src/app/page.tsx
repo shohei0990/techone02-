@@ -1,24 +1,30 @@
 // Homeのページ
-
 "use client"; // Next.jsのクライアントサイドのみでこのコンポーネントを実行することを指定
 
 import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
+import Image from "next/image"; // Next.jsのImageコンポーネントをインポート
+import Head from "next/head"; // Next.jsのHeadコンポーネントをインポート
 
 export default function Home() {
   return (
-    // JSXを返す。これはHTMLに似たJavaScriptの拡張構文です。
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      {/* メインコンテンツを中央に配置するためのdivタグ */}
-      <h1 className="text-4xl font-bold mb-8">Welcome to My Portfolio</h1>
-      {/* ポートフォリオへようこそという見出し */}
-      <Link href="/portfolios">
-        {/* Linkコンポーネントを使用して、'/portfolios'へのリンクを作成 */}
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          {/* ボタンスタイルを適用し、ポートフォリオページへのリンクボタンを表示 */}
-          Go to Portfolio
-        </button>
-      </Link>
-    </div>
+    <>
+      <Head>
+        <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet" />
+      </Head>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white font-ubuntu-mono">
+        {/* メインコンテンツを中央に配置するためのdivタグ */}
+        <div className="mb-50 mt-[-50px]"> {/* 画像の位置を上に調整 */}
+          <Image
+            src="/logo.png" // ロゴ画像のパス
+            alt="Portfolio"
+            width={200} // 画像の幅を指定
+            height={200} // 画像の高さを指定
+          />
+        </div>
+        {/* ポートフォリオへようこそという見出し */}
+        <Link href="/portfolios" className="text-white text-center mt-20 text-lg">　Portfolio
+        </Link>
+      </div>
+    </>
   );
 }
-
