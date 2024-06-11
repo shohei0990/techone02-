@@ -26,7 +26,6 @@ export type NotionMember_00 = {
     name : string;
 };
 
-
 // Notion portfolio取得情報の型定義
 export type NotionPost = {
     id: string;
@@ -158,50 +157,6 @@ export async function getAllMembers(): Promise<NotionMember[]> {
                 throw error;
     }
 }
-
-// Notionのデータベースから特定のメンバー情報を取得する関数
-export async function getMember(id: string): Promise<NotionMember | null> {
-    if (!process.env.MEMBER_DATABASE_ID) {
-        throw new Error("MEMBER_DATABASE_ID is required"); // MEMBER_DATABASE_IDが設定されていない場合はエラーを投げる
-    }
-
-    try {
-        const response = await notion.databases.query({
-            database_id: process.env.MEMBER_DATABASE_ID, // 環境変数からメンバーデータベースIDを取得
-            filter: {
-                property: 'id',
-                number: {
-                    equals: parseInt(id), // 文字列のIDを数値に変換
-                },
-            },
-        });
-
-        if (response.results.length === 0) {
-            return null; // メンバーが見つからない場合はnullを返す
-        }
-
-        const member = response.results[0];
-        if (!isFullPage(member)) {
-            throw new Error("Invalid member data");
-        }
-
-        const memberData: NotionMember = {
-            id: member.id,
-            name: member.properties.name?.rich_text?.[0]?.plain_text ?? "",
-            jobtitle: member.properties.jobtitle?.rich_text?.[0]?.plain_text ?? "",
-            selfintro: member.properties.selfintro?.rich_text?.[0]?.plain_text ?? "",
-            member_photo: member.properties.member_photo?.files?.[0]?.file?.url ?? "",
-            job_career: member.properties.job_career?.files?.[0]?.file?.url ?? "",
-        };
-
-        console.error("メンバーid", id); // エラーが発生した場合はコンソールに出力
-        return memberData; // 変換したメンバーデータを返す
-    } catch (error) {
-        console.error("メンバー情報の取得中にエラーが発生しました:", error); // エラーが発生した場合はコンソールに出力
-        throw error;
-    }
-}
-
 
 
 // Notionのデータベースから全てのメンバー情報を取得する関数
