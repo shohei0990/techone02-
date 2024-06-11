@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-
+import React from "react";
+import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
 
 const Header = () => {
 
@@ -21,17 +21,18 @@ const Header = () => {
           justifyContent: "space-between",
           backgroundColor: "var(--sub4)", 
           zIndex: 1 ,
+          borderBottom: "2px solid black", // 線の色を黒に設定
+          borderBottomWidth: "4px", // 線の太さを2pxに設定
         }}
       >
-              <a 
-              className="ml-10"
-              style={{ fontSize: "16px", fontWeight:'bold'}}
-              >テクワンギルド</a>
-
-              <a 
-              className="ml-auto"
-              style={{ fontSize: "14px", fontWeight:'bold'}}
-              >管理者A</a>
+              <Link href="/portfolios" legacyBehavior>
+                <a 
+                  className="ml-10"
+                  style={{ fontSize: "16px", fontWeight: 'bold' }}
+                >
+                  Tech One Guild
+                </a>
+              </Link>
 
               <button 
                 className="btn btn-square btn-ghost mr-5 ml-10"

@@ -1,5 +1,6 @@
 import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
 import Header from "../components/layouts/Header"; // Headerコンポーネントをインポート
+import Footer from "../components/layouts/Footer"; // Headerコンポーネントをインポート
 import { getAllPosts, } from '@/../libs/client'; // printAllPosts関数をインポート（パスの修正が必要な場合は適宜行ってください）
 
 export default async function PortfolioPage() {

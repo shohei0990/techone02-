@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --main: #FDA403;
-  --sub1: #E8751A;
-  --sub2: #898121;
-  --sub3: #f7f6f5;
-  --sub4: #dcd6d2;
-  --sub5: #E5C287;
-  --sub6:#A79277;
-  --sub10: #ffffff;
-  --sub11: #3c3c3c;
+  --main: #000000;
+  --sub1: #ffffff;
+  --sub2: #ffffff;
+  --sub3: #ffffff;
+  --sub4: #fcfcfc;
+  --sub5: #000000;
+  --sub6:#030303;
+  --sub10: #030303;
+  --sub11: #010101;
 }
 
 @media (max-width: 768px) {
